@@ -12,7 +12,7 @@ router.route('/all').get((req, res) => {
 router.route('/addFloor').post(async (req, res) => {
     const data = await axios.get(`http://localhost:5000/getFloorCount`).then((response) => {
         console.log(response.data.count);
-        const FloorNo = response.data.count+1;
+        const FloorNo = response.data.count + 1;
         const Rooms = [];
         const newFloor = new Floor({FloorNo, Rooms});
 
@@ -22,7 +22,6 @@ router.route('/addFloor').post(async (req, res) => {
 
 router.route('/addRoom/:no').post(async (req, res) => {
     const data = await axios.get(`http://localhost:5000/getRoomsCount/${req.params.no}`).then((response) => {
-        console.log(response.data.count);
         Floor.update({FloorNo: req.params.no}, {
             $push: {
                 Rooms: {
@@ -37,9 +36,10 @@ router.route('/addRoom/:no').post(async (req, res) => {
 });
 
 router.route('/getRoomsCount/:no').get((req, res) => {
-    Floor.findOne({FloorNo: req.params.no}).then(Floor => {
-        res.send({count: Floor.Rooms.length})
-    });
+    Floor.findOne({FloorNo: req.params.no})
+        .then(Floor => {
+            res.send({count: Floor.Rooms.length})
+        });
 });
 
 router.route('/getFloorCount').get((req, res) => {
