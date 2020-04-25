@@ -35,5 +35,5 @@ setInterval(async function () {
 
     });
 
-}, 1000);
+}, 10000);
 
