@@ -66,4 +66,18 @@ router.route('/update').post((req, res) => {
         });
 });
 
+router.route('/MaxRoomCount').get((req, res) => {
+    Floor.find()
+        .then(Floors => {
+            let maximumRoom = 0;
+            Floors.map(floor => {
+                if (floor.Rooms.length > maximumRoom) {
+                    maximumRoom = floor.Rooms.length
+                }
+            });
+            res.send({maximumRoom: maximumRoom})
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
 module.exports = router;
