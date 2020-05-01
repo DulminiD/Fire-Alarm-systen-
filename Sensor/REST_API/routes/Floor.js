@@ -55,12 +55,47 @@ router.route('/update').post((req, res) => {
         {
             $set: {
                 "Rooms.$.CO2Level": req.body.co2L,
-                "Rooms.$.SmokeLevel": req.body.smL,
-                "Rooms.$.Active": req.body.Active
+                "Rooms.$.SmokeLevel": req.body.smL
             }
         },
         {new: true})
-        .then((res) => {
+        .then(() => {
+            res.sendStatus(200);
+        })
+        .catch(err => {
+            console.error(err);
+        });
+});
+
+router.route('/Off/:FloorNo/:RoomNo').post((req, res) => {
+
+    Floor.findOneAndUpdate(
+        {FloorNo:parseInt( req.params.FloorNo), "Rooms.RoomNo": parseInt(req.params.RoomNo)},
+        {
+            $set: {
+                "Rooms.$.Active": false
+            }
+        },
+        {new: true})
+        .then(() => {
+            res.sendStatus(200);
+        })
+        .catch(err => {
+            console.error(err);
+        });
+});
+
+router.route('/On/:FloorNo/:RoomNo').post((req, res) => {
+    Floor.findOneAndUpdate(
+        {FloorNo:parseInt( req.params.FloorNo), "Rooms.RoomNo": parseInt(req.params.RoomNo)},
+        {
+            $set: {
+                "Rooms.$.Active": true
+            }
+        },
+        {new: true})
+        .then(() => {
+            res.sendStatus(200);
         })
         .catch(err => {
             console.error(err);
