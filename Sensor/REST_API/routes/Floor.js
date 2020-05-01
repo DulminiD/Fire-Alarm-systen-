@@ -2,6 +2,11 @@ const router = require('express').Router();
 let Floor = require('../model/Floor.model');
 const axios = require('axios');
 const nodemailer = require("nodemailer");
+const dotenv = require('dotenv');
+const Twilio = require('twilio');
+
+const config = dotenv.config().parsed;
+const client = new Twilio(config.TWILIO_ACCOUNT_SID, config.TWILIO_AUTH_TOKEN);
 
 
 router.route('/all').get((req, res) => {
@@ -139,6 +144,9 @@ router.route('/MailSender').get(async (req,res)=>{
             listOfRooms += "\n-------------------------------------\n"
         })
         MailSender(listOfRooms);
+        sendSms(listOfRooms,() => {
+            console.log("successfully send this" + listOfRooms);
+        })
     } catch (err) {
         console.error(err);
     }
@@ -171,4 +179,19 @@ function MailSender(text) {
     });
 }
 
+ function sendSms(bodyMessage, done){
+
+    let message = {
+        to: config.TO_PHONE_NUMBER,
+        from: config.FROM_PHONE_NUMBER,
+        body: bodyMessage
+    };
+
+    client.messages.create(message, (err, message) => {
+        if (err) return done(err);
+
+        return done(null, message);
+    });
+
+}
 module.exports = router;
